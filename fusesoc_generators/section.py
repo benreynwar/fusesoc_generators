@@ -1,4 +1,4 @@
-from fusesoc.section import Section
+from fusesoc.section import Section, SECTION_MAP
 
 
 class GeneratorSection(Section):
@@ -11,3 +11,5 @@ class GeneratorSection(Section):
         self._add_member('type', str, 'Language of the generator function')
         if items:
             self.load_dict(items)
+
+SECTION_MAP[GeneratorSection.TAG] = GeneratorSection
