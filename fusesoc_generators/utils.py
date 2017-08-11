@@ -13,9 +13,11 @@ def add_cores_roots(cores_roots):
         cm.add_cores_root(cores_root)
 
 
-def get_filenames_from_core(work_root, top_core_name, top_entity_name, generic_sets, top_params):
+def get_filenames_from_core(
+        work_root, top_core_name, top_entity_name, generic_sets, top_params,
+        addtional_generator=None):
     core_requirements = coreprocessor.get_core_requirements(top_core_name, work_root)
     src_files, incdirs = coreprocessor.run_generators(
-        core_requirements, work_root, top_entity_name, generic_sets, top_params)
+        core_requirements, work_root, top_entity_name, generic_sets, top_params, additional_generator)
     filenames = [f.name for f in src_files]
     return filenames

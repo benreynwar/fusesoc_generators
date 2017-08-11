@@ -108,8 +108,7 @@ def process_generator(g, top_params):
     return [section.File(fn) for fn in filenames], incdirs
 
 
-def compile_elab_and_run(core_requirements, work_root, all_top_generics,
-                         top_params, top_name):
+def first_generation_pass(core_requirements, work_root, all_top_generics, top_params):
     assert(all_top_generics)
     cmd = 'ghdl'
     generator_d = {}
@@ -131,20 +130,34 @@ def compile_elab_and_run(core_requirements, work_root, all_top_generics,
         updated_src_files = all_new_filenames + updated_src_files
         updated_incdirs = all_new_incdirs + updated_incdirs
         logger.debug('Updated src files are {}'.format([f.name for f in updated_src_files]))
-        # Compile files with ghdl
-        for f in updated_src_files:
-            args = ['-a']
-            args += [f.name]
-            Launcher(cmd, args,
-                     cwd=work_root,
-                     errormsg="Failed to analyze {}".format(f.name)).run()
         all_src_files += updated_src_files
         all_incdirs += updated_incdirs
+    return generator_d, all_src_files, all_incdirs
+
+
+def compile_src_files(work_root, src_files):
+    cmd = 'ghdl'
+    for f in src_files:
+        args = ['-a']
+        args += [f.name]
+        logger.debug('compiling file {}'.format(f.name))
+        Launcher(cmd, args,
+                 cwd=work_root,
+                 errormsg="Failed to analyze {}".format(f.name)).run()
+        logger.debug('finished compiling file {}'.format(f.name))
+
+def elaborate(work_root, top_name):
+    cmd = 'ghdl'
     # Elaborate
+    logger.debug('Elaborating')
     Launcher(cmd, ['-e']+[top_name],
-             cwd=work_root,
-             errormsg="Failed to elaborate {}".format(top_name)).run()
-    # Run
+            cwd=work_root,
+            errormsg="Failed to elaborate {}".format(top_name)).run()
+
+
+def run(work_root, top_name, all_top_generics, generator_d):
+    cmd = 'ghdl'
+    updated_generators = False
     for top_generics in all_top_generics:
         stderr_fn = os.path.join(work_root, 'stderr_0')
         args = ['-r']
@@ -168,17 +181,35 @@ def compile_elab_and_run(core_requirements, work_root, all_top_generics,
                         assert(key not in d)
                         d[key] = value
                         ds.append(d)
-        updated_generators = (len(ds) > 0)
+                        updated_generators = True
         for d in ds:
             fd = frozenset((k, v) for k, v in d.items())
             g = generator_d[d['name']]
             g['params'].add(fd)
+    return updated_generators
+
+
+def compile_elab_and_run(core_requirements, work_root, all_top_generics,
+                         top_params, top_name, additional_generator=None):
+    generator_d, all_src_files, all_incdirs = first_generation_pass(
+        core_requirements, work_root, all_top_generics, top_params)
+    if additional_generator is not None:
+        file_names = [f.name for f in all_src_files]
+        new_file_names = additional_generator(work_root, file_names)
+        all_src_files = [section.File(f) for f in new_file_names]
+    compile_src_files(work_root, all_src_files)
+    if top_name is not None:
+        elaborate(work_root, top_name)
+        updated_generators = run(work_root, top_name, all_top_generics, generator_d)
+    else:
+        updated_generators = False 
     return all_src_files, all_incdirs, updated_generators
 
 
-def run_generators(requirements, work_root, top_name, generic_sets={}, top_params={}):
+def run_generators(requirements, work_root, top_name, generic_sets={}, top_params={},
+                   additional_generator=None):
     updated = True
     while updated:
         src_files, incdirs, updated = compile_elab_and_run(
-            requirements, work_root, generic_sets, top_params, top_name)
+            requirements, work_root, generic_sets, top_params, top_name, additional_generator)
     return src_files, incdirs
