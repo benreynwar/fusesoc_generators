@@ -3,10 +3,6 @@ from setuptools import setup
 setup(
     name="fusesoc_generators",
     packages=['fusesoc_generators'],
-    use_scm_version={
-        "relative_to": __file__,
-        "write_to": "fusesoc_generators/version.py",
-    },
     author="Ben Reynwar",
     author_email="ben@reynwar.net",
     description=(""),
