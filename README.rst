@@ -7,11 +7,11 @@ It is currently limited to VHDL source files.
 
 A new kind of section is added to the core file in the form
 
-.. code-block:: text
-  [generator]
-  module = somepythonpackage.somepythonmodule
-  function = somepythonfunction
-  type = python
+.. code:: text
+    [generator]
+    module = somepythonpackage.somepythonmodule
+    function = somepythonfunction
+    type = python
 
 This specifys a python function to be called that will return a list
 of filenames, and include directories that the core depends upon.
@@ -31,50 +31,50 @@ Use Cases
    to be used throughout the design.  It's convenient to be able to
    easily generate this file from a python dictionary.
 
-.. code-block:: vhdl
-  package mydesign_constants is
-    constant BUS_WIDTH: {bus_width};
-    constant N_BLOCKS: {n_blocks};
-  end package;
+.. code:: vhdl
+    package mydesign_constants is
+      constant BUS_WIDTH: {bus_width};
+      constant N_BLOCKS: {n_blocks};
+    end package;
 
-.. code-block:: python
-  def generate(directory, generics, top_params):
-      '''
-      Generate the mydesign_constants package using values from the
-      top_params dictionary.
-      '''
-      template_filename = 'mydesign_constants.vhd'
-      with open(template_filename, 'r') as template_file:
-          template_contents = template_file.read()
-      package_contents = template_contents.format(**top_params)
-      package_filename = os.path.join(directory, 'mydesign_constants.vhd')
-      with open(package_filename, 'w') as package_file:
-          package_file.write(package_contents)
-      filenames = [package_filename]
-      incdirs = []
-      return filenames, incdirs
+.. code:: python
+    def generate(directory, generics, top_params):
+        '''
+        Generate the mydesign_constants package using values from the
+        top_params dictionary.
+        '''
+        template_filename = 'mydesign_constants.vhd'
+        with open(template_filename, 'r') as template_file:
+            template_contents = template_file.read()
+        package_contents = template_contents.format(**top_params)
+        package_filename = os.path.join(directory, 'mydesign_constants.vhd')
+        with open(package_filename, 'w') as package_file:
+            package_file.write(package_contents)
+        filenames = [package_filename]
+        incdirs = []
+        return filenames, incdirs
 
 2) If you're making an ASIC design, then there's a good chance you'll
    be using compiled memories.
 
 
-.. code-block:: python
-  def generate(directory, generics, top_params):
-      '''
-      Generate compiled memories and wrappers that gather all compiled
-      memories into a single interface that other VHDL entities can use.
-      '''
-      generated_filenames = []
-      width_depth_pairs = []
-      for generic_params in generics:
-        width = generic_params['width']
-        depth = generic_params['depth']
-        generated_filenames.append(
-            generate_a_compiled_memory(width=width, depth=depth))
-        width_depth_pairs.append((width, depth))
-      generated_filenames.append(generate_memory_wrapper(width_depth_pairs))
-      incdirs = []
-      return generated_filenames, incdirs
+.. code:: python
+    def generate(directory, generics, top_params):
+        '''
+        Generate compiled memories and wrappers that gather all compiled
+        memories into a single interface that other VHDL entities can use.
+        '''
+        generated_filenames = []
+        width_depth_pairs = []
+        for generic_params in generics:
+          width = generic_params['width']
+          depth = generic_params['depth']
+          generated_filenames.append(
+              generate_a_compiled_memory(width=width, depth=depth))
+          width_depth_pairs.append((width, depth))
+        generated_filenames.append(generate_memory_wrapper(width_depth_pairs))
+        incdirs = []
+        return generated_filenames, incdirs
 
 3)  Sometimes there just no easy way to easily create the parameterized design
     required without generation.  Binary trees can be difficult, and tool
