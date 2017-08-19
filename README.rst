@@ -8,6 +8,7 @@ It is currently limited to VHDL source files.
 A new kind of section is added to the core file in the form
 
 .. code:: text
+
     [generator]
     module = somepythonpackage.somepythonmodule
     function = somepythonfunction
@@ -32,12 +33,14 @@ Use Cases
    easily generate this file from a python dictionary.
 
 .. code:: vhdl
+
     package mydesign_constants is
       constant BUS_WIDTH: {bus_width};
       constant N_BLOCKS: {n_blocks};
     end package;
 
 .. code:: python
+
     def generate(directory, generics, top_params):
         '''
         Generate the mydesign_constants package using values from the
@@ -59,6 +62,7 @@ Use Cases
 
 
 .. code:: python
+
     def generate(directory, generics, top_params):
         '''
         Generate compiled memories and wrappers that gather all compiled
