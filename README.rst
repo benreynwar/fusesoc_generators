@@ -93,8 +93,63 @@ generators that need to know their generics must add logging into their
 source that outputs the generics used.  In this way the generics can be
 extracted by parsing the output of ghdl.
 
-FIXME: Give an example here of what the source file would look like for the
-compiled memory example.
+Below is an example ``jinja2`` template of a VHDL file that collects RAM
+definitions for various RAM instantiations and creates a single RAM entity
+with generic ``width`` and ``depth`` properties that the rest of the design
+can use.
+
+When ``fusesoc_generators`` processes the design, the generate function for
+the RAM will initially be passed an empty list of ``generics`` so that this
+template will be formatted with an empty list of ``width_depth_pairs``.
+The resulting VHDL will display an assertion for each time it is instantiated
+in the design listing the required ``width`` and ``depth``.  The ghdl logs
+are parsed and so the parameters of all the required RAM are determined.
+
+The generate function is now called with a full list of ``generics``.
+Compiled memories can be generated, and when the ``jinja2`` template is
+formatted it will contain instantiations of the compiled memories.
+
+.. code:: vhdl
+
+    entity RAM is
+      generic (
+        WIDTH: natural;
+        DEPTH: positive
+        );
+      port (
+        clk: in std_logic;
+        w_valid: in std_logic;
+        w_data: in std_logic_vector(WIDTH-1 downto 0);
+        w_address: in std_logic_vector(logceil(DEPTH)-1 downto 0);
+        ir_valid: in std_logic;
+        ir_address: in std_logic_vector(logceil(DEPTH)-1 downto 0);
+        or_valid: out std_logic;
+        or_data: out std_logic_vector(WIDTH-1 downto 0)
+        );
+    end entity;
+    
+    architecture arch of RAM is
+    begin
+      {% for width, depth in width_depth_pairs %}check_{{width}}_{{depth}}: if ((WIDTH = {{width}}) and (DEPTH = {{depth}})) generate
+        ram_for_{{width}}_{{depth}}: entity work.RAM_{{width}}_{{depth}}
+          port map (
+            clk => clk,
+            reset => reset,
+            w_valid => i_valid,
+            w_data => w_data,
+            w_address => w_address,
+            ir_valid => ir_valid,
+            ir_address => ir_address,
+            or_valid => or_valid,
+            or_data => or_data
+            );
+      end generate;
+      {% endfor %}
+      nomatch: if not (false{% for width, depth in width_depth_pairs %}
+                       or ((WIDTH={{width}}) and (DEPTH={{depth}})){% endfor %}) generate
+        assert false report "Generator name=RAM width=" & integer'image(WIDTH) & " depth=" & integer'image(DEPTH);
+      end generate;
+    end arch;
 
 Utilities
 ---------
