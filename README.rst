@@ -7,7 +7,7 @@ It is currently limited to VHDL source files.
 
 A new kind of section is added to the core file in the form
 
-.. code 
+.. code-block:: text
   [generator]
   module = somepythonpackage.somepythonmodule
   function = somepythonfunction
@@ -31,13 +31,13 @@ Use Cases
    to be used throughout the design.  It's convenient to be able to
    easily generate this file from a python dictionary.
 
-.. code:: vhdl
+.. code-block:: vhdl
   package mydesign_constants is
     constant BUS_WIDTH: {bus_width};
     constant N_BLOCKS: {n_blocks};
   end package;
 
-.. code:: python
+.. code-block:: python
   def generate(directory, generics, top_params):
       '''
       Generate the mydesign_constants package using values from the
@@ -58,7 +58,7 @@ Use Cases
    be using compiled memories.
 
 
-.. code:: python
+.. code-block:: python
   def generate(directory, generics, top_params):
       '''
       Generate compiled memories and wrappers that gather all compiled
@@ -84,10 +84,10 @@ Use Cases
 Super Elaboration
 -----------------
 To be able to detect which generic parameters a given module uses,
-fusesoc_generators runs all the files through `ghdl` and requires that
+fusesoc_generators runs all the files through ghdl and requires that
 generators that need to know their generics must add logging into their
 source that outputs the generics used.  In this way the generics can be
-extracted by parsing the output of `ghdl`.
+extracted by parsing the output of ghdl.
 
 FIXME: Give an example here of what the source file would look like for the
 compiled memory example.
@@ -95,9 +95,9 @@ compiled memory example.
 Utilities
 ---------
 
-Besides adding the `generator` section to the core description,
+Besides adding the 'generator' section to the core description,
 fusesoc_generators provides a function to return a list of files required
-by a core, `get_filenames_from_core`.
+by a core, ``get_filenames_from_core``.
 
 It has the arguments:
 
