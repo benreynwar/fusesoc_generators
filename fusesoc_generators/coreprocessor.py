@@ -13,7 +13,10 @@ from fusesoc.vlnv import Vlnv
 from fusesoc.coremanager import CoreManager
 from fusesoc.utils import Launcher
 from fusesoc import section
-from fusesoc.version import version
+try:
+    from fusesoc.version import version
+except ImportError:
+    version =None
 
 
 logger = logging.getLogger(__name__)
@@ -26,14 +29,17 @@ def get_version():
     Convert the version string into a list of integers so that
     it can be compared easily.
     '''
-    bits = version.split('.')
-    bits_as_int = []
-    for bit in bits:
-        try:
-            as_int = int(bit)
-        except ValueError:
-            as_int = bit
-        bits_as_int.append(as_int)
+    if version is None:
+        bits_as_int = [0, 0]
+    else:
+        bits = version.split('.')
+        bits_as_int = []
+        for bit in bits:
+            try:
+                as_int = int(bit)
+            except ValueError:
+                as_int = bit
+            bits_as_int.append(as_int)
     return bits_as_int
 
 

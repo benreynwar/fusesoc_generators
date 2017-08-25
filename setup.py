@@ -10,6 +10,6 @@ setup(
     keywords=["VHDL", "hdl", "rtl", "FPGA", "ASIC", "Xilinx", "Altera", "fusesoc"],
     url="https://github.com/benreynwar/fusesoc_generators",
     install_requires=[
-        'fusesoc>=1.6.0',
+        'fusesoc>=1.7.0',
     ],
 )
