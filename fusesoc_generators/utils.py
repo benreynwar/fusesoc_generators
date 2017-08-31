@@ -1,3 +1,5 @@
+import jinja2
+
 from fusesoc.coremanager import CoreManager
 from fusesoc_generators import coreprocessor
 
@@ -9,6 +11,8 @@ cm = CoreManager()
 
 
 def add_cores_roots(cores_roots):
+    if isinstance(cores_roots, str):
+        raise ValueError('cores_roots should be a list of filenames.  It seems to be a single filename.')
     for cores_root in cores_roots:
         cm.add_cores_root(cores_root)
 
@@ -37,3 +41,15 @@ def get_filenames_from_core(
         top_params, additional_generator)
     filenames = [f.name for f in src_files]
     return filenames
+
+
+def format_file(template_filename, output_filename, parameters):
+    '''
+    Create a file from a template and parameters.
+    '''
+    with open(template_filename, 'r') as f:
+        template_text = f.read()
+        template = jinja2.Template(template_text)
+    formatted_text = template.render(**parameters)
+    with open(output_filename, 'w') as g:
+        g.write(formatted_text)
