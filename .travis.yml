@@ -16,8 +16,8 @@ before_script:
   - git clone https://github.com/vunit/vunit.git
   - cd vunit
   - git checkout e0bd2ba3117c3781f2114b6299fde6c2654d4bb4
-  - cd ..
   - pip install -e .
+  - cd ..
   - git clone --depth 1 https://github.com/tgingold/ghdl.git ghdl
   - cd ghdl
   - mkdir build-llvm
