@@ -6,7 +6,7 @@ from vunit import VUnitCLI, VUnit
 from fusesoc_generators import get_filenames_from_core, add_cores_roots
 from fusesoc_generators.examples.binary_tree import binary_tree
 
-def run_test():
+def test_binary_tree():
     # FIXME: Why does commented out lines not work.
     #args = VUnitCLI().parse_args(argv=sys.argv)
     #vu = VUnit.from_args(args)
@@ -39,4 +39,4 @@ def run_test():
 
 
 if __name__ == '__main__':
-    run_test()
+    test_binary_tree()
