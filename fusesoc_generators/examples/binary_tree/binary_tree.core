@@ -1,0 +1,9 @@
+CAPI=1
+[main]
+name = binary_tree
+description = Binary tree for finding minimum (can be extended to other functions).
+
+[generator]
+module = fusesoc_generators.examples.binary_tree.binary_tree
+function = generate
+type = python
