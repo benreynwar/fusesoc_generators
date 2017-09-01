@@ -219,17 +219,22 @@ def run_single(work_root, top_name, top_generics):
     Used to determine which generics are required by generated entities.
     '''
     stderr_fn = os.path.join(work_root, 'stderr_0')
+    stdout_fn = os.path.join(work_root, 'stdout_0')
     args = ['-r']
     args += [top_name]
     for generic_name, generic_value in top_generics.items():
         args.append('-g{}={}'.format(generic_name, generic_value))
     with open(stderr_fn, 'w') as stderr_f:
-        Launcher('ghdl', args,
-                 cwd=work_root,
-                 stderr=stderr_f,
-                 errormsg="Simulation failed").run()
+        with open(stdout_fn, 'w') as stdout_f:
+            Launcher('ghdl', args,
+                     cwd=work_root,
+                     stdout=stdout_f,
+                     stderr=stderr_f,
+                     errormsg="Simulation failed").run()
     with open(stderr_fn, 'r') as stderr_f:
         error_lines = stderr_f.readlines()
+    with open(stdout_fn, 'r') as stdout_f:
+        error_lines += stdout_f.readlines()
     return error_lines
 
 
