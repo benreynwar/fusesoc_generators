@@ -196,9 +196,11 @@ def compile_src_files(work_root, src_files):
     '''
     Compiles src files using ghdl.
     '''
+    logger.debug('compiling src files {}'.format([f.name for f in src_files]))
     for f in src_files:
-        args = ['-a']
+        args = ['-a', '--std=08']
         args += [f.name]
+        logger.debug('Compiling {}'.format(f.name))
         Launcher('ghdl', args,
                  cwd=work_root,
                  errormsg="Failed to analyze {}".format(f.name)).run()
@@ -208,7 +210,7 @@ def elaborate(work_root, top_name):
     '''
     Elaborate the design using ghdl.
     '''
-    Launcher('ghdl', ['-e']+[top_name],
+    Launcher('ghdl', ['-e', '--std=08']+[top_name],
              cwd=work_root,
              errormsg="Failed to elaborate {}".format(top_name)).run()
 
@@ -220,7 +222,7 @@ def run_single(work_root, top_name, top_generics):
     '''
     stderr_fn = os.path.join(work_root, 'stderr_0')
     stdout_fn = os.path.join(work_root, 'stdout_0')
-    args = ['-r']
+    args = ['-r', '--std=08']
     args += [top_name]
     for generic_name, generic_value in top_generics.items():
         args.append('-g{}={}'.format(generic_name, generic_value))
@@ -286,15 +288,17 @@ def compile_elab_and_run(core_requirements, work_root, all_top_generics,
     if additional_generator is not None:
         file_names = [f.name for f in all_src_files]
         new_file_names = additional_generator(work_root, file_names)
-        all_src_files = [section.File(f) for f in new_file_names]
-    compile_src_files(work_root, all_src_files)
+        extended_src_files = [section.File(f) for f in new_file_names]
+    else:
+        extended_src_files = all_src_files
+    compile_src_files(work_root, extended_src_files)
     if top_name is not None:
         elaborate(work_root, top_name)
         updated_generators = run(
             work_root, top_name, all_top_generics, generator_d)
     else:
         updated_generators = False
-    return all_src_files, all_incdirs, updated_generators
+    return extended_src_files, all_incdirs, updated_generators
 
 
 def run_generators(requirements, work_root, top_name, generic_sets=None,

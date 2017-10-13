@@ -1,4 +1,5 @@
 import jinja2
+import logging
 
 from fusesoc.coremanager import CoreManager
 from fusesoc_generators import coreprocessor
@@ -7,6 +8,8 @@ from fusesoc_generators import coreprocessor
 from fusesoc_generators import section
 
 
+logger = logging.getLogger(__name__)
+
 cm = CoreManager()
 
 
@@ -14,6 +17,7 @@ def add_cores_roots(cores_roots):
     if isinstance(cores_roots, str):
         raise ValueError('cores_roots should be a list of filenames.  It seems to be a single filename.')
     for cores_root in cores_roots:
+        logger.debug('Adding directory {} to core_roots'.format(cores_root))
         cm.add_cores_root(cores_root)
 
 
