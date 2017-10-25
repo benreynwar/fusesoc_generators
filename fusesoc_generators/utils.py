@@ -43,7 +43,7 @@ def get_filenames_from_core(
     src_files, incdirs = coreprocessor.run_generators(
         core_requirements, work_root, top_entity_name, generic_sets,
         top_params, additional_generator)
-    filenames = [f.name for f in src_files]
+    filenames = list(set([f.name for f in src_files]))
     return filenames
 
 
