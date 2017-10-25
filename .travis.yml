@@ -15,7 +15,7 @@ before_script:
   - pip install -e .
   - git clone https://github.com/vunit/vunit.git
   - cd vunit
-  - git checkout e0bd2ba3117c3781f2114b6299fde6c2654d4bb4
+  - git checkout d9746b40949d7b89c90805e2ed3be67b33d635b5
   - git submodule update --init --recursive
   - pip install -e .
   - cd ..
