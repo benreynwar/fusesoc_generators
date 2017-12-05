@@ -226,13 +226,20 @@ def run_single(work_root, top_name, top_generics):
     args += [top_name]
     for generic_name, generic_value in top_generics.items():
         args.append('-g{}={}'.format(generic_name, generic_value))
-    with open(stderr_fn, 'w') as stderr_f:
-        with open(stdout_fn, 'w') as stdout_f:
-            Launcher('ghdl', args,
-                     cwd=work_root,
-                     stdout=stdout_f,
-                     stderr=stderr_f,
-                     errormsg="Simulation failed").run()
+    try:
+        with open(stderr_fn, 'w') as stderr_f:
+            with open(stdout_fn, 'w') as stdout_f:
+                Launcher('ghdl', args,
+                        cwd=work_root,
+                        stdout=stdout_f,
+                        stderr=stderr_f,
+                        errormsg="Simulation failed").run()
+    except RuntimeError as error:
+        with open(stdout_fn, 'r') as stdout_f:
+            for line in stdout_f:
+                if 'ghdl:error' in line:
+                    logger.error(line)
+        raise error
     with open(stderr_fn, 'r') as stderr_f:
         error_lines = stderr_f.readlines()
     with open(stdout_fn, 'r') as stdout_f:
