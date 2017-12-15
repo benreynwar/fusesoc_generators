@@ -16,7 +16,7 @@ from fusesoc import section
 try:
     from fusesoc.version import version
 except ImportError:
-    version =None
+    version = None
 
 
 logger = logging.getLogger(__name__)
@@ -230,15 +230,17 @@ def run_single(work_root, top_name, top_generics):
         with open(stderr_fn, 'w') as stderr_f:
             with open(stdout_fn, 'w') as stdout_f:
                 Launcher('ghdl', args,
-                        cwd=work_root,
-                        stdout=stdout_f,
-                        stderr=stderr_f,
-                        errormsg="Simulation failed").run()
+                         cwd=work_root,
+                         stdout=stdout_f,
+                         stderr=stderr_f,
+                         errormsg="Simulation failed").run()
     except RuntimeError as error:
         with open(stdout_fn, 'r') as stdout_f:
             for line in stdout_f:
                 if 'ghdl:error' in line:
                     logger.error(line)
+                else:
+                    logger.debug(line)
         raise error
     with open(stderr_fn, 'r') as stderr_f:
         error_lines = stderr_f.readlines()
