@@ -14,8 +14,8 @@ def test_binary_tree():
     lib_name = 'lib'
     lib = vu.add_library(lib_name)
     vu._builtins._add_osvvm()
-    vu._builtins._add_data_types()
-    vu._builtins.add_vhdl_builtins()
+    # vu._builtins._add_data_types()
+    # vu._builtins.add_vhdl_builtins()
 
     add_cores_roots([binary_tree.thisdir])
     work_root = 'fusesoc_generators_test_work_directory'
