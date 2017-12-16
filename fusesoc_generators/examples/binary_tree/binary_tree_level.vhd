@@ -24,8 +24,8 @@ entity binary_tree_level_{{level}} is
 end entity;
 
 architecture arch of binary_tree_level_{{level}} is
-  constant N_PAIRS: positive := N_INPUTS/2;
-  constant HAS_SINGLE: positive := N_INPUTS - N_PAIRS * 2;
+  constant N_PAIRS: natural := N_INPUTS/2;
+  constant HAS_SINGLE: natural := N_INPUTS - N_PAIRS * 2;
   signal ic_valid: std_logic;
   signal ic_ready: std_logic;
   signal i_reduceddata: std_logic_vector(WIDTH*(N_PAIRS+HAS_SINGLE)-1 downto 0);
