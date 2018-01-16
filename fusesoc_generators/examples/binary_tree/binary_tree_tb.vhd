@@ -136,10 +136,10 @@ begin
     variable o_meta_queue: queue_t;
   begin
     test_runner_setup(runner, runner_cfg);
-    i_queue := allocate;
-    o_queue := allocate;
-    i_meta_queue := allocate;
-    o_meta_queue := allocate;
+    i_queue := new_queue;
+    o_queue := new_queue;
+    i_meta_queue := new_queue;
+    o_meta_queue := new_queue;
     while n_tested < 100 loop
       wait until rising_edge(monitor_clk);
       monitor_i(i, i_queue, i_meta_queue);
