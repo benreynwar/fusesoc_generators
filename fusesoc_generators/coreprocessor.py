@@ -59,28 +59,24 @@ def get_cores(system_name):
     return cores
 
 
-def get_core_files(core):
+def get_core_files(core, flags=None):
     '''
     Get all the files and include directories required by a core for synthesis.
     Ignores generators.
     '''
-    usage = ['synth']
+    if flags is None:
+        flags = {
+            'flow': 'sim',
+            'tool': 'ghdl',
+            }
+    old_files = core.get_files(flags=flags)
     files_root = os.path.abspath(core.files_root)
     src_files = []
+    for old_file in old_files:
+        new_file = copy.deepcopy(old_file)
+        new_file.name = os.path.join(files_root, old_file.name)
+        src_files.append(new_file)
     incdirs = []
-    for fileset in core.file_sets:
-        fileset_has_relevant_usage = set(fileset.usage) & set(usage)
-        if fileset_has_relevant_usage and not fileset.private:
-            for file in fileset.file:
-                if file.is_include_file:
-                    incdir = os.path.join(
-                        files_root, os.path.dirname(file.name))
-                    if incdir not in incdirs:
-                        incdirs.append(incdir)
-                else:
-                    new_file = copy.deepcopy(file)
-                    new_file.name = os.path.join(files_root, file.name)
-                    src_files.append(new_file)
     return src_files, incdirs
 
 
@@ -106,7 +102,7 @@ def get_core_generators(core, output_directory):
     return generators
 
 
-def get_core_requirements(system_name, output_directory):
+def get_core_requirements(system_name, output_directory, flags=None):
     '''
     Takes a top level core name and produces a list of tuples of
     (filenames, include directories, generators).
@@ -118,7 +114,7 @@ def get_core_requirements(system_name, output_directory):
     cores = get_cores(system_name)
     for core in cores:
         core.setup()
-        src_files, incdirs = get_core_files(core)
+        src_files, incdirs = get_core_files(core, flags=flags)
         generators = get_core_generators(core, abs_output_directory)
         all_requirements.append((src_files, incdirs, generators))
     return all_requirements
