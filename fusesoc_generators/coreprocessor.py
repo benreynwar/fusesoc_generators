@@ -68,6 +68,7 @@ def get_core_files(core, flags=None):
         flags = {
             'flow': 'sim',
             'tool': 'ghdl',
+            'is_toplevel': False
             }
     old_files = core.get_files(flags=flags)
     files_root = os.path.abspath(core.files_root)
