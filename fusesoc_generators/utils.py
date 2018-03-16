@@ -12,7 +12,7 @@ from fusesoc_generators import section
 
 logger = logging.getLogger(__name__)
 
-cm = CoreManager(config.Config())
+cm = coreprocessor.cm
 
 
 def add_cores_roots(cores_roots):
