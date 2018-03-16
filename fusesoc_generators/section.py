@@ -1,4 +1,4 @@
-from fusesoc.section import Section, SECTION_MAP
+from fusesoc.capi1.section import Section, SECTION_MAP
 
 
 class GeneratorSection(Section):

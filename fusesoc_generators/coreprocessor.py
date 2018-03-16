@@ -9,10 +9,11 @@ import logging
 import sys
 import importlib
 
+from fusesoc import config
 from fusesoc.vlnv import Vlnv
 from fusesoc.coremanager import CoreManager
 from fusesoc.utils import Launcher
-from fusesoc import section
+from fusesoc.capi1 import section
 try:
     from fusesoc.version import version
 except ImportError:
@@ -21,7 +22,7 @@ except ImportError:
 
 logger = logging.getLogger(__name__)
 
-cm = CoreManager()
+cm = CoreManager(config.Config())
 
 
 def get_version():

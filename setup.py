@@ -11,6 +11,6 @@ setup(
     url="https://github.com/benreynwar/fusesoc_generators",
     install_requires=[
         'jinja2',
-        'fusesoc>=1.7.0',
+        'fusesoc>=1.8.0',
     ],
 )

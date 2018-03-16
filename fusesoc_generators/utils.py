@@ -1,6 +1,8 @@
-import jinja2
 import logging
 
+import jinja2
+
+from fusesoc import config
 from fusesoc.coremanager import CoreManager
 from fusesoc_generators import coreprocessor
 
@@ -10,7 +12,7 @@ from fusesoc_generators import section
 
 logger = logging.getLogger(__name__)
 
-cm = CoreManager()
+cm = CoreManager(config.Config())
 
 
 def add_cores_roots(cores_roots):
