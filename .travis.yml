@@ -13,12 +13,7 @@ before_install:
 
 before_script:
   - pip install -e .
-  - git clone https://github.com/vunit/vunit.git
-  - cd vunit
-  - git checkout vunit3
-  - git submodule update --init --recursive
-  - pip install -e .
-  - cd ..
+  - pip install vunit
   - git clone --depth 1 https://github.com/tgingold/ghdl.git ghdl
   - cd ghdl
   - mkdir build-llvm
